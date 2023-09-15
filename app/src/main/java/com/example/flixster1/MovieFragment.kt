@@ -15,6 +15,7 @@ import com.codepath.asynchttpclient.callback.JsonHttpResponseHandler
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import okhttp3.Headers
+import org.json.JSONArray
 import org.json.JSONObject
 
 private const val API_KEY = "a07e22bc18f5cb106bfe4cc1f83ad8ed"
@@ -36,7 +37,7 @@ class MovieFragment : Fragment(), OnListFragmentInteractionListener {
         val progressBar = view.findViewById<View>(R.id.progress) as ContentLoadingProgressBar
         val recyclerView = view.findViewById<View>(R.id.list) as RecyclerView
         val context = view.context
-        recyclerView.layoutManager = GridLayoutManager(context, 2)
+        recyclerView.layoutManager = GridLayoutManager(context, 1)
         updateAdapter(progressBar, recyclerView)
         return view
     }
@@ -51,7 +52,7 @@ class MovieFragment : Fragment(), OnListFragmentInteractionListener {
         // Create and set up an AsyncHTTPClient() here
         val client = AsyncHttpClient()
         val params = RequestParams()
-        params["api-key"] = API_KEY
+        params["api_key"] = API_KEY
         // Using the client, perform the HTTP request
         client[
             "https://api.themoviedb.org/3/movie/now_playing",
@@ -67,11 +68,11 @@ class MovieFragment : Fragment(), OnListFragmentInteractionListener {
                     progressBar.hide()
 
                     //TODO - Parse JSON into Models
-                    val resultsJSON : JSONObject = json.jsonObject.get("results") as JSONObject
-                    val moviesRawJSON : String = resultsJSON.get("movie").toString()
+                    val resultsJSON : String = json.jsonObject.get("results").toString()
+//                    val moviesRawJSON : String = resultsJSON.get("movie").toString()
                     val gson = Gson()
                     val  arrayMovieType = object: TypeToken<List<Movie>>() {}.type
-                    val models : List<Movie> = gson.fromJson(moviesRawJSON,arrayMovieType) // Fix me!
+                    val models : List<Movie> = gson.fromJson(resultsJSON,arrayMovieType) // Fix me!
                     recyclerView.adapter = MovieRecyclerViewAdapter(models, this@MovieFragment)
 
                     // Look for this in Logcat:
@@ -89,7 +90,7 @@ class MovieFragment : Fragment(), OnListFragmentInteractionListener {
 
                     // If the error is not null, log it!
                     t?.message?.let {
-                        Log.e("MovieFragment", errorResponse)
+                        Log.e("MovieFragment Failure", errorResponse)
                     }
                 }
             }]

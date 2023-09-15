@@ -8,11 +8,11 @@ class Movie {
     var title: String? = null
 
     //TODO movieImageUrl
-    @SerializedName("movie_image")
+    @SerializedName("poster_path")
     var movieImageUrl: String? = null
 
     //TODO description
-    @SerializedName("description")
+    @SerializedName("overview")
     var description: String? = null
 
 }
